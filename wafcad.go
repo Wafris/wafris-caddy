@@ -23,7 +23,7 @@ func init() {
 	httpcaddyfile.RegisterHandlerDirective("wafris", parseCaddyfileHandlerDirective)
 }
 
-// Gizmo is an example; put your own type here.
+// Wafris, a free, open source WAF (web application firewall)
 type WafrisCaddy struct {
 	WafrisURL   string `json:"wafris_url,omitempty"`
 	logger      *zap.Logger
