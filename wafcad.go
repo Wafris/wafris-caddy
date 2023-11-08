@@ -81,6 +81,8 @@ func (wc *WafrisCaddy) Provision(ctx caddy.Context) error {
 	wc.coreScript = redis.NewScript(wafris_core_lua)
 	wc.redisClient = rclient
 
+	LoadUserDefinedProxies(sugar)
+
 	// sugar.Warnln(2858015995, "coreScript", wc.coreScript)
 
 	return nil
@@ -105,11 +107,11 @@ func (wc WafrisCaddy) ServeHTTP(rw http.ResponseWriter, req *http.Request, next 
 	ctx := context.Background()
 	rdb := wc.redisClient
 
-	ip, _, err := net.SplitHostPort(req.RemoteAddr)
-	if err != nil {
-		sugar.Warnf("req.RemoteAddr: %q is not IP:port", req.RemoteAddr)
-		ip = req.RemoteAddr
-	}
+	ip := getRealIp(req, sugar)
+
+	// sugar.Debugf("2659600773 req getRealIp           ip: %v", ip)
+	// sugar.Debugf("2659600774 req.Get    x-forwarded-for: %v", req.Header.Get("x-forwarded-for"))
+	// sugar.Debugf("2659600775 req.Values x-forwarded-for: %v", req.Header.Values("x-forwarded-for"))
 
 	parsed_ip := net.ParseIP(ip)
 
@@ -176,6 +178,36 @@ func parseCaddyfileHandlerDirective(h httpcaddyfile.Helper) (caddyhttp.Middlewar
 	var wc WafrisCaddy
 	err := wc.UnmarshalCaddyfile(h.Dispenser)
 	return wc, err
+}
+
+// best effort based on x-forwarded-for and RemoteAddr
+func getRealIp(req *http.Request, sugar *zap.SugaredLogger) string {
+	// var err error
+	xff_values := req.Header.Values("x-forwarded-for")
+
+	if len(xff_values) != 0 {
+		// reverse the slice
+		for i, j := 0, len(xff_values)-1; i < j; i, j = i+1, j-1 {
+			xff_values[i], xff_values[j] = xff_values[j], xff_values[i]
+		}
+
+		// sugar.Debugf("req.xff_values: %v", xff_values)
+
+		for _, ip := range xff_values {
+			// sugar.Debugf("3450939168 req.IsTrustedProxy: %v, %v", ip, IsTrustedProxy(ip))
+			if !IsTrustedProxy(ip) {
+				// ues this one
+				return ip
+			}
+		}
+	}
+
+	ip, _, err := net.SplitHostPort(req.RemoteAddr)
+	if err != nil {
+		sugar.Errorf("req.RemoteAddr: %q is not IP:port", req.RemoteAddr)
+		ip = req.RemoteAddr
+	}
+	return ip
 }
 
 // https://andrew.red/posts/golang-ipv4-ipv6-to-decimal-integer

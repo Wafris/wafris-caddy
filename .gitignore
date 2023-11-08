@@ -2,4 +2,5 @@
 .DS_Store
 
 caddy
+caddy_*
 Caddyfile
