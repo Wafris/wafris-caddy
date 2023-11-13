@@ -55,3 +55,5 @@ or
 1. Sign in to or register a new account at wafris.org
 2. Add your redis URL
 3. Add any necessay block rules
+
+<img src='https://uptimer.expeditedsecurity.com/wafris-rb' width='0' height='0'>
