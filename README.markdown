@@ -56,4 +56,4 @@ or
 2. Add your redis URL
 3. Add any necessay block rules
 
-<img src='https://uptimer.expeditedsecurity.com/wafris-rb' width='0' height='0'>
+<img src='https://uptimer.expeditedsecurity.com/wafris-caddy' width='0' height='0'>
