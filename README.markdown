@@ -45,7 +45,7 @@ Download xcaddy at https://github.com/caddyserver/xcaddy
 
 Add the `wafris` directive to your Caddyfile. The directive takes a single argument, which is the Redis URL you received in Step 1.
 
-```
+```nginx
 route {
   # this redis url assumes you are running redis on your local machine for testing purposes
   wafris "redis://localhost:6379?protocol=3"
@@ -54,7 +54,7 @@ route {
 
 These routes are usually nesting in a siteblock such as:
 
-```
+```nginx
 localhost {
   route {
     wafris "redis://localhost:6379?protocol=3"
@@ -62,7 +62,7 @@ localhost {
 }
 ```
 or
-```
+```nginx
 example.com {
   reverse_proxy :4000 {
   }
