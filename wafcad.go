@@ -145,21 +145,21 @@ func (wc WafrisCaddy) ServeHTTP(rw http.ResponseWriter, req *http.Request, next 
 			// req.Header.Set("X-WafrisResult", result_string)
 
 			if result_string == "Blocked" {
+        sugar.Infoln("2548097413 [Wafris] Blocked: ", ip, req.Method, req.Host, req.URL.String())
 				return writeBlockedResponse(rw)
 			}
 
 		} else {
 			// result_string is something else
-			sugar.Warnf("2548097416 wafris-caddy %T", n)
-			sugar.Warnln(2548097417, "wafris-caddy", n)
+      sugar.Warnf("2548097416 [Wafris] Redis returned type that wasn't a string: %T, value: %v. Request passed without rules check.", n, n)
 		}
 	} else {
-		sugar.Warnln(2548097418, "wafris-caddy", err)
+    sugar.Warnln(2548097418, "[Wafris] Redis connection error: ", err, "Request passed without rules check.")
 	}
 
 	// debug
 	// req.Header.Set("X-Wafris-Result", fmt.Sprintf("%v", n))
-
+  // Pass by default if something is wrong with Redis
 	return next.ServeHTTP(rw, req)
 }
 
