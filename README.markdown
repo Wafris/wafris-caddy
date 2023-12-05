@@ -80,6 +80,24 @@ Not sure what Redis provider to use? Please read our [Wafris Redis Providers Gui
 
 If you have Cloudflare, Expedited WAF, or another service in front of your application that modifies the `x-forwarded-for` HTTP Request header, please review how to configure [Trusted Proxy Ranges](docs/trusted-proxies.md)
 
+## Redis Timeouts
+
+If you want to set a maximum timeout for redis, you can define wafris using a block of subdirectives like so:
+
+```nginx
+localhost {
+  route {
+    wafris {
+      url "redis://localhost:6379?protocol=3"
+			timeout 0.250
+    }
+  }
+}
+```
+
+The `url` subdirective is required and the `timeout` subdirective is optional.
+The `timeout` is in seconds formatted as a float.  If your redis instance is local to your caddy (as in, on the same machine) this can be quite low, in the milliseconds range.  Cloud or hosted redis instances should probably be set in the hundreds of milliseconds.  To see redis timeout log messages make log level info or debug.  Testing and timing your specific implementation is highly recommended.
+
 
 ## Help / Support
 

@@ -3,15 +3,28 @@
 }
 
 # Example Caddyfile for local testing
-# This particular setup runs a reverse_proxy from 80 to 2001
-
+# This particular setup runs a reverse_proxy from 80 to 2001 and from 8080 to 2002
 
 :80 {
 	reverse_proxy :2001 {
 	}
 
 	route {
-		# this redis url assumes you are running redis on your local machine for testing purposes
+		# This redis url assumes you are running redis on your local machine for testing purposes
 		wafris "redis://localhost:6379?protocol=3"
+	}
+}
+
+:8080 {
+	reverse_proxy :2002 {
+	}
+
+	route {
+		# If you want to set a redis timeout use nested subdirectives.
+		# The url is required and the optional timeout value should be in seconds formatted as a float
+		wafris {
+			url "redis://localhost:6379?protocol=3"
+			timeout 0.250
+		}
 	}
 }
