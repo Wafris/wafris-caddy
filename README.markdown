@@ -36,7 +36,7 @@ follow the instructions to link your Redis instance.
 Either generate a custom Caddy build that includes Wafris from [https://caddyserver.com/download](https://caddyserver.com/download), or use the `xcaddy` utility to build from source:
 
 ```
-$ xcaddy build --with github.com/wafris/wafris-caddy
+xcaddy build --with github.com/wafris/wafris-caddy
 ```
 
 Download xcaddy at https://github.com/caddyserver/xcaddy
