@@ -76,6 +76,12 @@ func (wc *WafrisCaddy) Provision(ctx caddy.Context) error {
 		return fmt.Errorf("9688903171 [Wafris] SCRIPT LOAD returned error: %v", sha_or_err)
 	}
 
+  // Assuming the script load is successful, now create the hash.
+  _, err = rclient.HSet(context.Background(), "waf-settings", "version", "v0.0.1", "client", "wafris-caddy").Result()
+  if err != nil {
+      return fmt.Errorf("error setting waf-settings: %v", err)
+  }
+
 	wc.coreScript = redis.NewScript(wafris_core_lua)
 	wc.redisClient = rclient
 
